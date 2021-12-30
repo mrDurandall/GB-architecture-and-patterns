@@ -1,5 +1,3 @@
-# from os.path import join
-
 from framework.templator import render
 
 
