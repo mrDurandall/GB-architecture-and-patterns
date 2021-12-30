@@ -6,8 +6,8 @@ from urls import routes
 
 if __name__ == '__main__':
 
-    NewApplication = Framework(routes)
+    new_application = Framework(routes)
 
-    with make_server('', 8000, NewApplication) as httpd:
+    with make_server('', 8000, new_application) as httpd:
         print("Serving on port 8000...")
         httpd.serve_forever()

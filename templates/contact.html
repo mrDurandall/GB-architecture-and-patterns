@@ -5,7 +5,7 @@
   <title>night_sky - contact us</title>
   <meta name="description" content="website description" />
   <meta name="keywords" content="website keywords, website keywords" />
-  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <!--  <link rel="stylesheet" type="text/css" href="style/style.css" />-->
   <style>
     html{height: 100%;}
@@ -364,9 +364,18 @@
         <p>You can send us e-mail vial this form</p>
         <form action="#" method="post">
           <div class="form_settings">
-            <p><span>Name</span><input class="contact" type="text" name="your_name" value="" /></p>
-            <p><span>Email Address</span><input class="contact" type="text" name="your_email" value="" /></p>
-            <p><span>Message</span><textarea class="contact textarea" rows="8" cols="50" name="your_enquiry"></textarea></p>
+            <p>
+              <span>Name</span>
+              <input class="contact" type="text" name="your_name" value="" id="name"/>
+            </p>
+            <p>
+              <span>Email Address</span>
+              <input class="contact" type="text" name="your_email" value="" id="email"/>
+            </p>
+            <p>
+              <span>Message</span>
+              <textarea class="contact textarea" rows="8" cols="50" name="your_enquiry" id="message"></textarea>
+            </p>
             <p style="padding-top: 15px"><span>&nbsp;</span><input class="submit" type="submit" name="contact_submitted" value="submit" /></p>
           </div>
         </form>

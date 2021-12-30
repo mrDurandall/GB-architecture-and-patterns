@@ -1,3 +1,8 @@
+from quopri import decodestring
+
+from framework.requests import GetRequest, PostRequest
+
+
 class PageNotFound:
     def __call__(self, *args, **kwargs):
         return '404 Not found', 'Oops! 404'
@@ -16,6 +21,18 @@ class Framework:
 
         request = {}
 
+        method = environ['REQUEST_METHOD']
+        request['method'] = method
+
+        if method == 'POST':
+            data = PostRequest().get_request_parameters(environ)
+            request['data'] = Framework.decode_value(data)
+            print(f'Received post-request {Framework.decode_value(data)}')
+        if method == 'GET':
+            request_params = GetRequest().get_request_parameters(environ)
+            request['request_parameters'] = Framework.decode_value(request_params)
+            print(f'Received get-request {Framework.decode_value(request_params)}')
+
         if path in self.routes:
             view = self.routes[path]
         else:
@@ -23,3 +40,14 @@ class Framework:
         response, template = view(request)
         start_response(response, [('Content-Type', 'text/html')])
         return [template.encode('utf-8')]
+
+    @staticmethod
+    def decode_value(data):
+        # new_data = data
+        new_data = {}
+        for k, v in data.items():
+            val = bytes(v.replace('%', '=').replace("+", " "), 'UTF-8')
+            val_decode_str = decodestring(val).decode('UTF-8')
+            new_data[k] = val_decode_str
+        print(new_data)
+        return new_data
