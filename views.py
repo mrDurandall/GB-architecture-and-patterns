@@ -1,17 +1,19 @@
 from framework.templator import render
 
-from patterns.creation_patterns import Engine
+from patterns.creation_patterns import Engine, Logger
 
 site = Engine()
 
 
 class Index:
     def __call__(self, request):
+        Logger.log('Index page opened')
         return '200 OK', render('index.html')
 
 
 class ContactUs:
     def __call__(self, request):
+        Logger.log('Contact page opened')
         if request['method'] == 'POST':
             with open('messages.txt', 'a') as f:
                 for data in list(request['data'].values())[:3]:
@@ -22,24 +24,23 @@ class ContactUs:
 
 class AboutUs:
     def __call__(self, request):
+        Logger.log('About page opened')
         return '200 OK', render('about_us.html')
 
 
 class TrainingCategories:
     def __call__(self, request):
+        Logger.log('Categories page opened')
         return '200 OK', render('training_categories.html', objects_list=site.categories)
 
 
 class Trainings:
     def __call__(self, request):
-        print(request)
+        Logger.log('Trainings page opened')
         category_id = int(request['request_parameters']['id'])
         category = site.find_category_by_id(category_id)
-        print(category.trainings)
-        print(site.coaches)
         if request['method'] == 'POST':
             data = request['data']
-            print(data)
             time = data['time']
             coach = data['coach']
             type_ = data['type']
@@ -53,6 +54,7 @@ class Trainings:
 
 class Coaches:
     def __call__(self, request):
+        Logger.log('Coaches page opened')
         if request['method'] == 'POST':
             data = request['data']
             name = data['name']
@@ -64,6 +66,7 @@ class Coaches:
 
 class Athletes:
     def __call__(self, request):
+        Logger.log('Athletes page opened')
         if request['method'] == 'POST':
             data = request['data']
             name = data['name']
