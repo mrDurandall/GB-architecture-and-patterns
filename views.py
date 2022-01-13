@@ -1,5 +1,9 @@
 from framework.templator import render
 
+from patterns.creation_patterns import Engine
+
+site = Engine()
+
 
 class Index:
     def __call__(self, request):
@@ -19,3 +23,51 @@ class ContactUs:
 class AboutUs:
     def __call__(self, request):
         return '200 OK', render('about_us.html')
+
+
+class TrainingCategories:
+    def __call__(self, request):
+        return '200 OK', render('training_categories.html', objects_list=site.categories)
+
+
+class Trainings:
+    def __call__(self, request):
+        print(request)
+        category_id = int(request['request_parameters']['id'])
+        category = site.find_category_by_id(category_id)
+        print(category.trainings)
+        print(site.coaches)
+        if request['method'] == 'POST':
+            data = request['data']
+            print(data)
+            time = data['time']
+            coach = data['coach']
+            type_ = data['type']
+            new_training = site.create_training(type_, time, coach, category)
+            site.trainings.append(new_training)
+        return '200 OK', render('trainings.html',
+                                objects_list=category.trainings,
+                                category_name=category.name,
+                                coaches_list=site.coaches)
+
+
+class Coaches:
+    def __call__(self, request):
+        if request['method'] == 'POST':
+            data = request['data']
+            name = data['name']
+            age = data['age']
+            new_coach = site.create_user('coach', name, age)
+            site.coaches.append(new_coach)
+        return '200 OK', render('coaches.html', objects_list=site.coaches)
+
+
+class Athletes:
+    def __call__(self, request):
+        if request['method'] == 'POST':
+            data = request['data']
+            name = data['name']
+            age = data['age']
+            new_coach = site.create_user('athlete', name, age)
+            site.athletes.append(new_coach)
+        return '200 OK', render('athletes.html', objects_list=site.athletes)

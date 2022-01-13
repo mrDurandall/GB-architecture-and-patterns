@@ -5,9 +5,9 @@
   <div id="menubar">
     <ul id="menu">
       <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
-      <li class="selected"><a href="/">Home</a></li>
+      <li><a href="/">Home</a></li>
       <li><a href="about_us">About Us</a></li>
-      <li><a href="training_categories">Our Trainings</a></li>
+      <li class="selected"><a href="training_categories">Our Trainings</a></li>
       <li><a href="athletes">Our Athletes</a></li>
       <li><a href="coaches">Our Coaches</a></li>
       <li><a href="contact_us">Contact Us</a></li>
@@ -16,8 +16,10 @@
 {% endblock %}
 {% block content %}
   <div id="content">
-    <h1>Welcome to the Elbrus climbing gym website</h1>
-    <p>We are the best climbing gym in Severodvinsk. Best prices highest walls and biggest boulder area.</p>
+    <h1>Select trainig category</h1>
+      {% for category in objects_list %}
+        <p><a href="/trainings/?id={{category.id}}">{{category.name}}</a></p>
+      {% endfor %}
   </div>
 {% endblock %}
 

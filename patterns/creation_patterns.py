@@ -34,8 +34,7 @@ class TrainingPrototype:
 
 class Training(TrainingPrototype):
 
-    def __init__(self, date, time, coach, category):
-        self.date = date
+    def __init__(self, time, coach, category):
         self.time = time
         self.coach = coach
         self.category = category
@@ -43,11 +42,17 @@ class Training(TrainingPrototype):
 
 
 class AdultTraining(Training):
-    pass
+
+    def __init__(self, time, coach, category):
+        Training.__init__(self, time, coach, category)
+        self.type_ = 'Adult'
 
 
 class ChildrenTraining(Training):
-    pass
+
+    def __init__(self, time, coach, category):
+        Training.__init__(self, time, coach, category)
+        self.type_ = 'Children'
 
 
 class TrainingFactory:
@@ -57,8 +62,8 @@ class TrainingFactory:
     }
 
     @classmethod
-    def create(cls, type_, date, time, coach, category):
-        return cls.types[type_](date, time, coach, category)
+    def create(cls, type_, time, coach, category):
+        return cls.types[type_](time, coach, category)
 
 
 class Category:
@@ -78,10 +83,21 @@ class Category:
 class Engine:
 
     def __init__(self):
+
         self.coaches = []
         self.athletes = []
         self.trainings = []
         self.categories = []
+
+        # Заполним данные для тестирования
+        self.coaches.append(UserFactory.create('coach', 'Popov Dmitriy', '34'))
+        self.coaches.append(UserFactory.create('coach', 'Volkova Lubov', '30'))
+        self.athletes.append(UserFactory.create('coach', 'Adam Ondra', '28'))
+        self.athletes.append(UserFactory.create('coach', 'Stasha Gejo', '24'))
+        new_category = Category('Morning', None)
+        self.categories.append(new_category)
+        new_category = Category('Evening', None)
+        self.categories.append(new_category)
 
     @staticmethod
     def create_user(type_, name, age):
@@ -98,20 +114,13 @@ class Engine:
         raise Exception(f'Категория с id {id} отсутствует в базе!')
 
     @staticmethod
-    def create_training(type_, date, time, coach, category):
-        return TrainingFactory.create(type_, date, time, coach, category)
+    def create_training(type_, time, coach, category):
+        return TrainingFactory.create(type_, time, coach, category)
 
     def get_training_by_coach(self, coach):
         results = []
         for training in self.trainings:
             if training.coach == coach:
-                results.append(training)
-        return results
-
-    def get_training_by_date(self, date):
-        results = []
-        for training in self.trainings:
-            if training.date == date:
                 results.append(training)
         return results
 

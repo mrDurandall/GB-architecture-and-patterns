@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Elbrus Climbing Gym: Index{% endblock %}
+
+{% block menu %}
+  <div id="menubar">
+    <ul id="menu">
+      <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+      <li><a href="/">Home</a></li>
+      <li><a href="/about_us">About Us</a></li>
+      <li class="selected"><a href="/training_categories">Our Trainings</a></li>
+      <li><a href="/athletes">Our Athletes</a></li>
+      <li><a href="/coaches">Our Coaches</a></li>
+      <li><a href="/contact_us">Contact Us</a></li>
+    </ul>
+  </div>
+{% endblock %}
+{% block content %}
+  <div id="content">
+    <h1>Our {{category_name}} trainings</h1>
+      <table>
+        {% for training in objects_list %}
+        <tr>
+          <td>{{training.time}}</td>
+          <td>{{training.type_}}</td>
+          <td>{{training.coach}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    <h2>Add new training</h2>
+    <form action="#" method="post">
+      <div class="form_settings">
+        <p>
+          <span>Type</span>
+          <select name="type">
+          <option selected value="adult">Adult</option>
+          <option value="children">Children</option>
+          </select>
+        </p>
+        <p>
+          <span>Time</span>
+<!--          <input class="contact" type="text" name="time" value="" id="time"/>-->
+          <select name="time">
+          <option value="08">8:00</option>
+          <option value="09">9:00</option>
+          <option value="10">10:00</option>
+          <option value="11">11:00</option>
+          </select>
+        </p>
+        <p>
+          <span>Coach</span>
+<!--          <input class="contact" type="text" name="coach" value="" id="coach"/>-->
+          <select name="coach">
+            {% for coach in coaches_list %}
+              <option value="{{coach.name}}">{{coach.name}}</option>
+            {% endfor %}
+          </select>
+        </p>
+        <p style="padding-top: 15px"><span>&nbsp;</span><input class="submit" type="submit" name="contact_submitted" value="Add" /></p>
+      </div>
+    </form>
+
+  </div>
+{% endblock %}
+

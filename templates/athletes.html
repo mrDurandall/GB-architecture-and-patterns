@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Elbrus Climbing Gym: Index{% endblock %}
+
+{% block menu %}
+  <div id="menubar">
+    <ul id="menu">
+      <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+      <li><a href="/">Home</a></li>
+      <li><a href="about_us">About Us</a></li>
+      <li><a href="training_categories">Our Trainings</a></li>
+      <li  class="selected"><a href="athletes">Our Athletes</a></li>
+      <li><a href="coaches">Our Coaches</a></li>
+      <li><a href="contact_us">Contact Us</a></li>
+    </ul>
+  </div>
+{% endblock %}
+{% block content %}
+  <div id="content">
+    <h1>Our Athletes</h1>
+    <table>
+      {% for athlete in objects_list %}
+      <tr>
+        <td>{{athlete.name}}</td>
+        <td>{{athlete.age}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <h2>Add new athlete</h2>
+    <form action="#" method="post">
+      <div class="form_settings">
+        <p>
+          <span>Name</span>
+          <input class="contact" type="text" name="name" value="" id="name"/>
+        </p>
+        <p>
+          <span>Age</span>
+          <input class="contact" type="text" name="age" value="" id="age"/>
+        </p>
+        <p style="padding-top: 15px"><span>&nbsp;</span><input class="submit" type="submit" name="contact_submitted" value="Add" /></p>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
