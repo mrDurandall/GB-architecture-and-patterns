@@ -24,15 +24,14 @@ class Framework:
         method = environ['REQUEST_METHOD']
         request['method'] = method
 
+        request_params = GetRequest().get_request_parameters(environ)
+        request['request_parameters'] = Framework.decode_value(request_params)
+
         if method == 'POST':
             data = PostRequest().get_request_parameters(environ)
             request['data'] = Framework.decode_value(data)
-            request_params = GetRequest().get_request_parameters(environ)
-            request['request_parameters'] = Framework.decode_value(request_params)
             print(f'Received post-request {Framework.decode_value(data)}')
         if method == 'GET':
-            request_params = GetRequest().get_request_parameters(environ)
-            request['request_parameters'] = Framework.decode_value(request_params)
             print(f'Received get-request {Framework.decode_value(request_params)}')
 
         if path in self.routes:
