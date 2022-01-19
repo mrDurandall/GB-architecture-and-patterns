@@ -1,6 +1,8 @@
 from copy import deepcopy
 
 
+from patterns.behavioral_patterns import TrainingObserver, EmailNotifier, SMSNotifier
+
 class User:
     def __init__(self, name, age):
         self.name = name
@@ -32,13 +34,33 @@ class TrainingPrototype:
         return deepcopy(self)
 
 
-class Training(TrainingPrototype):
+class Training(TrainingPrototype, TrainingObserver):
 
     def __init__(self, time, coach, category):
-        self.time = time
-        self.coach = coach
+        self._time = time
+        self._coach = coach
         self.category = category
         self.category.trainings.append(self)
+        self.athletes = []
+        super().__init__()
+
+    @property
+    def time(self):
+        return self._time
+
+    @time.setter
+    def time(self, new_time):
+        self._time = new_time
+        self.notify_time()
+
+    @property
+    def coach(self):
+        return self._coach
+
+    @coach.setter
+    def coach(self, new_coach):
+        self._coach = new_coach
+        self.notify_coach()
 
 
 class AdultTraining(Training):
@@ -152,3 +174,12 @@ class Logger(metaclass=Singleton):
     @staticmethod
     def log(text):
         print('log--->', text)
+
+
+if __name__ == '__main__':
+    category = Category('Morning', None)
+    training = Training('12.00', 'Lubov Volkova', category)
+    training.observers.append(EmailNotifier())
+    training.observers.append(SMSNotifier())
+    training.time = '11.00'
+    training.coach = 'Popov Dmitriy'
