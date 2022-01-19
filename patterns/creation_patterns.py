@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-
 from patterns.behavioral_patterns import TrainingObserver, EmailNotifier, SMSNotifier
+
 
 class User:
     def __init__(self, name, age):
@@ -36,7 +36,11 @@ class TrainingPrototype:
 
 class Training(TrainingPrototype, TrainingObserver):
 
+    next_id = 1
+
     def __init__(self, time, coach, category):
+        self.id = Training.next_id
+        Training.next_id += 1
         self._time = time
         self._coach = coach
         self.category = category
@@ -139,12 +143,13 @@ class Engine:
     def create_training(type_, time, coach, category):
         return TrainingFactory.create(type_, time, coach, category)
 
-    def get_training_by_coach(self, coach):
-        results = []
+    def get_training_by_id(self, id):
         for training in self.trainings:
-            if training.coach == coach:
-                results.append(training)
-        return results
+            if training.id == id:
+                result = training
+                return result
+        raise Exception(f'There is no training with {id} id in base!')
+
 
 
 class Singleton(type):
