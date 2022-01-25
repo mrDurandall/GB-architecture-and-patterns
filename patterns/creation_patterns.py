@@ -1,7 +1,9 @@
 from copy import deepcopy
+from sqlite3 import connect
 
 from patterns.behavioral_patterns import TrainingObserver, EmailNotifier, SMSNotifier, FileWriter,\
     ConsoleWriter
+from patterns.unit_of_work import DomainObject
 
 
 class User:
@@ -193,6 +195,97 @@ class Logger(metaclass=Singleton):
     def log(self, text):
         text = f'log-->{text}'
         self.writer.write(text)
+
+
+class AthleteMapper:
+
+    def __init__(self, connection):
+        self.connection = connection
+        self.cursor = connection.cursor()
+        self.tablename = 'athletes'
+
+    def all(self):
+        statment = f'SELECT * FROM {self.tablename}'
+        self.corsor.execute(statment)
+        result = []
+        for item in self.cursor.fetchall():
+            id, name, age = item
+            athlete = Athlete(name, age)
+            athlete.id = id
+            result.append(athlete)
+        return result
+
+    def find_by_id(self, id):
+        statement = f'SELECT id, name, age FROM {self.tablename} WHERE id=?'
+        self.cursor.execute(statement, (id, ))
+        result = self.cursor.fetchone()
+        if result:
+            return Athlete(*result)
+        else:
+            raise RecordNotFoundException(f'There is no athlete with id={id}')
+
+    def insert(self, obj):
+        statement = f'INSERT INTO {self.tablename} (name) VALUES (?)'
+        self.cursor.execute(statement, (obj.name, obj.age, ))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbCommitException(e.args)
+
+    def update(self, obj):
+        statement = f'UPDATE {self.tablename} SET name=? WHERE id=?'
+        self.cursor.execute(statement, (obj.name, obj.id))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbUpdateException(e.args)
+
+    def delete(self, obj):
+        statement = f'DELETE FROM {self.tablename} WHERE id=?'
+        self.cursor.execute(statement, (obj.id, ))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbDeleteException(e.args)
+
+
+connection = connect('elbrus_gym.sqlite')
+
+
+class MapperRegistry:
+    mappers = {
+        'athletes': AthleteMapper,
+
+    }
+
+    @staticmethod
+    def get_mapper(obj):
+        if isinstance(obj, Athlete):
+            return AthleteMapper(connection)
+
+    @staticmethod
+    def get_current_mapper(name):
+        return MapperRegistry.mappers[name](connection)
+
+
+class DbCommitException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Db commit error: {message}')
+
+
+class DbUpdateException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Db update error: {message}')
+
+
+class DbDeleteException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Db delete error: {message}')
+
+
+class RecordNotFoundException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Record not found: {message}')
 
 
 if __name__ == '__main__':
