@@ -1,6 +1,7 @@
 from copy import deepcopy
 
-from patterns.behavioral_patterns import TrainingObserver, EmailNotifier, SMSNotifier
+from patterns.behavioral_patterns import TrainingObserver, EmailNotifier, SMSNotifier, FileWriter,\
+    ConsoleWriter
 
 
 class User:
@@ -48,6 +49,9 @@ class Training(TrainingPrototype, TrainingObserver):
         self.athletes = []
         super().__init__()
 
+    def __getitem__(self, item):
+        return self.athletes[item]
+
     @property
     def time(self):
         return self._time
@@ -65,6 +69,9 @@ class Training(TrainingPrototype, TrainingObserver):
     def coach(self, new_coach):
         self._coach = new_coach
         self.notify_coach()
+
+    def add_athlete(self, athlete):
+        self.athletes.append(athlete)
 
 
 class AdultTraining(Training):
@@ -150,6 +157,12 @@ class Engine:
                 return result
         raise Exception(f'There is no training with {id} id in base!')
 
+    def get_athlete_by_name(self, name):
+        for athlete in self.athletes:
+            if athlete.name == name:
+                return athlete
+        raise Exception(f'There is no athlete with {name} name in base!')
+
 
 
 class Singleton(type):
@@ -173,12 +186,13 @@ class Singleton(type):
 
 class Logger(metaclass=Singleton):
 
-    def __init__(self, name):
+    def __init__(self, name, writer=FileWriter()):
         self.name = name
+        self.writer = writer
 
-    @staticmethod
-    def log(text):
-        print('log--->', text)
+    def log(self, text):
+        text = f'log-->{text}'
+        self.writer.write(text)
 
 
 if __name__ == '__main__':

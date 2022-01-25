@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from jsonpickle import dumps, loads
 
 from framework.templator import render
 
@@ -50,6 +51,7 @@ class EmailNotifier(Notifier):
 # Создание шаблонов для отображений
 class TemplateView:
     template_name = 'template.html'
+    request_parameters = {}
 
     def get_context_data(self):
         return {}
@@ -102,3 +104,35 @@ class CreateView(TemplateView):
             return self.render_template_with_context()
         else:
             return super().__call__(request)
+
+
+# Добавляем различные реализации логгера
+
+class ConsoleWriter:
+
+    def write(self, text):
+        print(text)
+
+
+class FileWriter:
+
+    def __init__(self):
+        self.file_name = 'log.txt'
+
+    def write(self, text):
+        with open(self.file_name, 'a', encoding='utf-8') as f:
+            f.write(f'{text}\n')
+
+
+# Сериалайзер для выгрузки данных в Api
+class BaseSerializer:
+
+    def __init__(self, obj):
+        self.obj = obj
+
+    def save(self):
+        return dumps(self.obj)
+
+    @staticmethod
+    def load(data):
+        return loads(data)

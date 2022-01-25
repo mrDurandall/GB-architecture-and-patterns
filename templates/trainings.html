@@ -18,18 +18,26 @@
   <div id="content">
     <h1>Our {{category_name}} trainings</h1>
       <table>
-        {% for training in objects_list %}
         <tr>
           <td></td>
           <td>Training time</td>
           <td>Age of Athletes</td>
           <td>Coach</td>
+          <td>Athletes</td>
         </tr>
+        {% for training in objects_list %}
         <tr>
           <td><a href="/change_training/?id={{training.id}}">Change training</a></td>
           <td>{{training.time}}</td>
           <td>{{training.type_}}</td>
           <td>{{training.coach}}</td>
+          <td>
+            {% for athlete in training.athletes %}
+            <p>{{athlete.name}}</p>
+            {% endfor %}
+            <p><a href="/add_athlete/?id={{training.id}}">add athlete</a></p>
+          </td>
+          <td><a href="/training_api/?id={{training.id}}">Download</a></td>
         </tr>
         {% endfor %}
       </table>
